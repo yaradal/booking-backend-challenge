@@ -13,6 +13,12 @@ router.use(express.urlencoded({ extended: false }));
 /** Takes care of JSON data */
 router.use(express.json());
 
+/** Swagger  */
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+router.use('/api-docs', swaggerUi.serve);
+router.get('/api-docs', swaggerUi.setup(swaggerDocument));
+
 /** Routes */
 router.use('/', routes);
 
