@@ -1,8 +1,9 @@
 # Backend Challenge - TypeScript
 
 > If you want, you may also complete this challenge in: 
-> [Java](https://gitlab.com/limehome/interviews/backend-challenge-java)
 > [Python](https://gitlab.com/limehome/interviews/backend-challenge-python)
+> or
+> [Java](https://gitlab.com/limehome/interviews/backend-challenge-java)
 
 ## Context
 

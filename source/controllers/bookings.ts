@@ -1,7 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import axis, { AxiosResponse } from 'axios';
-import { Database } from 'sqlite3';
-import { PrismaClient, Prisma } from '@prisma/client'
 import prisma from '../prisma'
 
 interface Booking {
@@ -18,14 +15,14 @@ const healthCheck = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const createBooking = async (req: Request, res: Response, next: NextFunction) => {
-    let booking: Booking = req.body;
+    const booking: Booking = req.body;
 
     let outcome = await isBookingPossible(booking);
     if (!outcome.result) {
         return res.status(400).json(outcome.reason);
     }
 
-    const bookingResult = await prisma.booking.create({
+    let bookingResult = await prisma.booking.create({
         data: {
              guestName: booking.guestName,
              unitID: booking.unitID,
