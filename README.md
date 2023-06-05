@@ -1,4 +1,4 @@
-# Backend Challenge - Java
+# Backend Challenge - TypeScript
 
 ## Context
 
@@ -38,7 +38,7 @@ To make sure that everything is setup properly, open http://localhost:8000 in yo
 The logs should be looking like this
 
 ```shell
-The server is running on port 8000
+The server is running on http://localhost:8000
 GET / 200 3.088 ms - 16
 ```
 
