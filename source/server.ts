@@ -35,7 +35,7 @@ let server: http.Server;
 
 export async function startServer() {
     return new Promise((resolve, reject) => {
-        const port = 8000;
+        const port = process.env.PORT || 8000;
         server = http.createServer(app);
         server.listen(port, () => {
             console.log(`The server is running on http://localhost:${port}`);

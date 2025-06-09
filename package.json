@@ -4,9 +4,9 @@
   "description": "",
   "main": "source/server.ts",
   "scripts": {
-    "dev": "nodemon source/server.ts",
+    "dev": "source ./source/.env && nodemon source/server.ts",
     "build": "rm -rf build/ && prettier --write source/ && tsc",
-    "test": "jest --coverage --detectOpenHandles --runInBand"
+    "test": "source ./source/.env-test && jest --coverage --detectOpenHandles --runInBand"
   },
   "keywords": [],
   "author": "",
