@@ -55,11 +55,18 @@ async function isBookingPossible(booking: Booking): Promise<bookingOutcome> {
         return {result: false, reason: "The given guest name cannot book the same unit multiple times"};
     }
 
+    const checkInDate = new Date(booking.checkInDate);
+    const checkOutDate = new Date(checkInDate.getTime() + booking.numberOfNights * 24 * 60 * 60 * 1000);
+
     // check 2 : the same guest cannot be in multiple units at the same time
     let sameGuestAlreadyBooked = await prisma.booking.findMany({
         where: {
-            guestName: {
-                equals: booking.guestName,
+            AND: {
+                guestName: {
+                    equals: booking.guestName,
+                },
+                checkInDate: { lt: checkOutDate },
+                checkOutDate: { gt: checkInDate },
             },
         },
     });
@@ -68,17 +75,14 @@ async function isBookingPossible(booking: Booking): Promise<bookingOutcome> {
     }
 
     // check 3 : Unit is available for the check-in date
-    const checkIn = new Date(booking.checkInDate);
-    const checkOut = new Date(checkIn.getTime() + booking.numberOfNights * 24 * 60 * 60 * 1000);
-
     let isUnitAvailableOnCheckInDate = await prisma.booking.findMany({
         where: {
             AND: {
                 unitID: {
                     equals: booking.unitID,
                 },
-                checkInDate: { lt: checkOut },
-                checkOutDate: { gt: checkIn },
+                checkInDate: { lt: checkOutDate },
+                checkOutDate: { gt: checkInDate },
             },
         },
     });

@@ -16,5 +16,5 @@ model Booking {
   checkOutDate   DateTime
 
   @@index([unitID, checkInDate, checkOutDate], name: "idx_booking_unit_dates")
-  @@index([guestName], name: "idx_booking_guest")
+  @@index([guestName, checkInDate, checkOutDate], name: "idx_booking_guest")
 }
