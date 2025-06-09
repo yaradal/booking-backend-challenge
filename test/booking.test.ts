@@ -219,4 +219,28 @@ describe('Booking API', () => {
 
         expect(response2.status).toBe(200);
     });
+
+    test('Same guest different unit overlapping dates', async () => {
+        // Create first booking
+        const response1 = await axios.post(`${hostUrl}/api/v1/booking`, GUEST_A_UNIT_1);
+        expect(response1.status).toBe(200);
+        expect(response1.data.guestName).toBe(GUEST_A_UNIT_1.guestName);
+
+        // Same guest trying to book a different unit with overlapping dates
+        let error: any;
+        try {
+            await axios.post(`${hostUrl}/api/v1/booking`, {
+                unitID: '2',
+                guestName: 'GuestA',
+                checkInDate: new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 day after first booking
+                numberOfNights: 3, // This will overlap with the first booking
+            });
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeInstanceOf(AxiosError);
+        expect(error.response.status).toBe(400);
+        expect(error.response.data).toBe('The same guest cannot be in multiple units at the same time');
+    });
 });
