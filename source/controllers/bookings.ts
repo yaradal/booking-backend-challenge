@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import {NextFunction, Request, Response} from 'express';
 import prisma from '../prisma'
 
 interface Booking {
@@ -27,6 +27,7 @@ const createBooking = async (req: Request, res: Response, next: NextFunction) =>
              guestName: booking.guestName,
              unitID: booking.unitID,
              checkInDate: new Date(booking.checkInDate),
+             checkOutDate: new Date(new Date(booking.checkInDate).getTime() + booking.numberOfNights * 24 * 60 * 60 * 1000),
              numberOfNights: booking.numberOfNights
        }
     })
@@ -67,17 +68,19 @@ async function isBookingPossible(booking: Booking): Promise<bookingOutcome> {
     }
 
     // check 3 : Unit is available for the check-in date
+    const checkIn = new Date(booking.checkInDate);
+    const checkOut = new Date(checkIn.getTime() + booking.numberOfNights * 24 * 60 * 60 * 1000);
+
     let isUnitAvailableOnCheckInDate = await prisma.booking.findMany({
         where: {
             AND: {
-                checkInDate: {
-                    equals: new Date(booking.checkInDate),
-                },
                 unitID: {
                     equals: booking.unitID,
-                }
-            }
-        }
+                },
+                checkInDate: { lt: checkOut },
+                checkOutDate: { gt: checkIn },
+            },
+        },
     });
     if (isUnitAvailableOnCheckInDate.length > 0) {
         return {result: false, reason: "For the given check-in date, the unit is already occupied"};
