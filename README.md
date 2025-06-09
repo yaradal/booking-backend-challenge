@@ -72,3 +72,36 @@ Snapshots:   0 total
 Time:        0.984 s, estimated 1 s
 Ran all test suites.
 ```
+
+## Implementation notes
+
+### Refactoring the environment management 
+I felt it was weird to not be able to run the test suite and the app at the same time. I redid the way we managed the environment, so we can configure each independently. 
+We could also consider having different databases for the app and the test suite in the future.
+
+### Database changes
+The database schema is designed to handle bookings efficiently and prevent double-bookings:
+
+1. Date Range Storage: We store both `checkInDate` and `checkOutDate` to make overlap queries efficient. Although `checkOutDate` could be calculated from `checkInDate + numberOfNights`, storing it explicitly allows for faster queries and easier date range validations.
+
+2. Composite Index: The `idx_booking_unit_dates` index on `[unitID, checkInDate, checkOutDate]` optimizes our overlap queries. This index is crucial for quickly finding conflicting bookings for a unit within a date range.
+
+3. Guest Index: The `idx_booking_guest` index on `guestName` helps enforce that a guest cannot be in multiple units simultaneously.
+
+### Booking validation changes
+Validate properly that a unit cannot be double-booked using this check:
+
+The logic is:
+
+**checkInDate < checkOut**: The existing booking starts before our booking ends.
+
+**checkOutDate > checkIn**: The existing booking ends after our booking starts.
+
+If both conditions are true, it means there's an overlap. This covers all possible overlap scenarios:
+1. New booking's check-in falls within existing booking.
+2. New booking's check-out falls within existing booking.
+3. New booking completely encompasses existing booking.
+4. Existing booking completely encompasses new booking.
+
+
+
