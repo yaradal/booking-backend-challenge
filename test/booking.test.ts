@@ -1,6 +1,6 @@
-import axios, {AxiosError} from 'axios';
-import {startServer, stopServer} from '../source/server';
-import {PrismaClient} from '@prisma/client';
+import axios, { AxiosError } from 'axios';
+import { startServer, stopServer } from '../source/server';
+import { PrismaClient } from '@prisma/client';
 
 const GUEST_A_UNIT_1 = {
     unitID: '1',
