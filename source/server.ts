@@ -3,6 +3,10 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import morgan from 'morgan';
 import routes from './routes/bookings';
 import prisma from './prisma';
+import { BookingRepository } from './repositories/bookingRepository';
+import { BookingService } from './services/bookingService';
+import { BookingController } from './controllers/bookings';
+import getRouter from './routes/bookings';
 
 export const app: Express = express();
 
@@ -10,7 +14,7 @@ export const app: Express = express();
 app.use(morgan('dev'));
 
 // Parse the request
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Swagger
@@ -19,8 +23,13 @@ const swaggerDocument = require('./swagger.json');
 app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', swaggerUi.setup(swaggerDocument));
 
+// We build the app
+const bookingRepository = new BookingRepository();
+const bookingService = new BookingService(bookingRepository);
+const bookingController = new BookingController(bookingService);
+
 // Routes
-app.use('/', routes);
+app.use('/', getRouter(bookingController));
 
 // Error handling
 app.use((req: Request, res: Response, next: NextFunction) => {

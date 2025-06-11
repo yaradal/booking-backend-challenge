@@ -1,9 +1,15 @@
 import express from 'express';
-import controller from '../controllers/bookings';
+import { BookingController } from '../controllers/bookings';
 
-const router = express.Router();
 
-router.get('/', controller.healthCheck);
-router.post('/api/v1/booking/', controller.createBooking);
-router.post('/api/v1/booking/extend', controller.extendBooking);
-export = router;
+const getRouter = (bookingController: BookingController) => {
+    const router = express.Router();
+
+    router.get('/', bookingController.healthCheck);
+    router.post('/api/v1/booking/', bookingController.createBooking);
+    router.post('/api/v1/booking/extend', bookingController.extendBooking);
+    return router;
+
+}
+
+export default getRouter;

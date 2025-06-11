@@ -25,10 +25,8 @@ interface ExtensionOutcome extends AvailabilityCheckOutcome {
 }
 
 export class BookingService {
-    private bookingRepository: BookingRepository;
 
-    constructor() {
-        this.bookingRepository = new BookingRepository();
+    constructor(private readonly bookingRepository: BookingRepository) {
     }
 
     async createBooking(booking: Booking): Promise<PrismaBooking> {
