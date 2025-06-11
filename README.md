@@ -86,7 +86,7 @@ The database schema is designed to handle bookings efficiently and prevent doubl
 
 2. Composite Index: The `idx_booking_unit_dates` index on `[unitID, checkInDate, checkOutDate]` optimizes our overlap queries. This index is crucial for quickly finding conflicting bookings for a unit within a date range.
 
-3. Guest Index: The `idx_booking_guest` index on `guestName` helps enforce that a guest cannot be in multiple units simultaneously.
+3. Composite Index: The `idx_booking_guest` index on `[unitID, checkInDate, checkOutDate]` helps enforce that a guest cannot be in multiple units simultaneously.
 
 ### Booking validation changes
 Validate properly that a unit cannot be double-booked using this check:
@@ -102,6 +102,13 @@ If both conditions are true, it means there's an overlap. This covers all possib
 2. New booking's check-out falls within existing booking.
 3. New booking completely encompasses existing booking.
 4. Existing booking completely encompasses new booking.
+
+### Refactoring the code into layers
+
+Following the standard REST API architecture, I rearranged code into controller (for request handling), services(for business logic) and repository (for data access).
+
+### New feature added for extending booking
+While this feature could be implemented in different ways, I chose to update the existing record. Since we cannot have the same guest book the same unit multiple times, this makes sure we can still enforce this rule (we might consider changing that in the future).
 
 
 
