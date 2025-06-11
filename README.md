@@ -105,10 +105,22 @@ If both conditions are true, it means there's an overlap. This covers all possib
 
 ### Refactoring the code into layers
 
-Following the standard REST API architecture, I rearranged code into controller (for request handling), services(for business logic) and repository (for data access).
+I rearranged code into controller (for request handling), services (for business logic) and repository (for data access), because the code started to be hard to read.
 
 ### New feature added for extending booking
-While this feature could be implemented in different ways, I chose to update the existing record. Since we cannot have the same guest book the same unit multiple times, this makes sure we can still enforce this rule (we might consider changing that in the future).
 
+For the booking extension feature, I considered two main options.
 
+- Creating a new booking for the extension:
 
+This would allow reusing the same booking route, and conceptually, an extension could be treated as a new booking (especially since it may trigger a new payment). However, this approach would go against a rule from the initial requirements: a guest cannot book the same unit more than once.
+
+- Updating the existing booking record:
+
+This approach requires creating a separate route specifically for handling extensions. While it means we can no longer treat an extension as a separate booking, it preserves the uniqueness constraint and ensures the rule remains enforceable. This is the approach I've chosen for now, but this decision can be revisited in the future if our business logic evolves.
+
+## TODOs
+
+- A nice thing to do next would be to add proper validation to the controller to make sure everything that we're allowing is allowed. For example, check the booking unit exists, validate non-empty strings on name, unit, date validations, number of nights is a positive number...
+
+- Dockerize the app for production.
