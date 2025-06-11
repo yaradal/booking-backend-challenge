@@ -1,12 +1,11 @@
 import http from 'http';
-import express, { Express, NextFunction, Request, Response } from 'express';
+import express, {Express, NextFunction, Request, Response} from 'express';
 import morgan from 'morgan';
-import routes from './routes/bookings';
+import getRouter from './routes/bookingRoutes';
 import prisma from './prisma';
-import { BookingRepository } from './repositories/bookingRepository';
-import { BookingService } from './services/bookingService';
-import { BookingController } from './controllers/bookings';
-import getRouter from './routes/bookings';
+import {BookingRepository} from './repositories/bookingRepository';
+import {BookingService} from './services/bookingService';
+import {BookingController} from './controllers/bookingController';
 
 export const app: Express = express();
 
